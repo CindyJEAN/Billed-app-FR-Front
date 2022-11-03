@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "test": "jest --coverage --noStackTrace --silent"
+    "test": "jest --coverage --noStackTrace --silent",
+    "billsTest": "jest src/__tests__/Bills.js"
   },
   "jest": {
     "verbose": false,
@@ -30,6 +31,7 @@
     "@testing-library/user-event": "^12.0.11",
     "babel-jest": "^26.1.0",
     "jest": "^26.1.0",
+    "jest-cli": "^29.2.2",
     "jest-environment-jsdom": "^27.4.6",
     "jest-html-reporter": "^3.1.3"
   }
