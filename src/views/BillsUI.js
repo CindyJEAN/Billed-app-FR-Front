@@ -25,8 +25,6 @@ const row = (bill) => {
 };
 
 const rows = (data) => {
-  // console.log("data", data);
-  // console.log("dataSorted", data.sort(antiChrono));
   return data && data.length
     ? data
         .sort(antiChrono)
