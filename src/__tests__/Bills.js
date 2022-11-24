@@ -5,12 +5,13 @@
 
 import { fireEvent, screen, waitFor } from "@testing-library/dom";
 import BillsUI from "../views/BillsUI.js";
-import { bills } from "../fixtures/bills.js";
+import { bills as billsFixtures } from "../fixtures/bills.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
 import router from "../app/Router.js";
 import Bills from "../containers/Bills.js";
+import userEvent from "@testing-library/user-event";
 
 jest.mock("../app/store", () => mockStore);
 
@@ -36,7 +37,7 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon.classList).toContain("active-icon");
     });
     test("Then bills should be ordered from earliest to latest", () => {
-      document.body.innerHTML = BillsUI({ data: bills });
+      document.body.innerHTML = BillsUI({ data: billsFixtures });
       const dates = screen
         .getAllByText(
           /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i
@@ -47,8 +48,8 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted);
     });
   });
-  //todo test click on new bill
-  describe("When I am on Bills Page and I click on new bill", () => {
+
+  describe("When I am on Bills Page, and I click on new bill", () => {
     test("Then it should render new bill page", () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
@@ -62,14 +63,13 @@ describe("Given I am connected as an employee", () => {
           type: "Employee",
         })
       );
-      const store = null
       const billsPage = new Bills({
         document,
         onNavigate,
-        store,
+        store: null,
         localStorage,
       });
-      document.body.innerHTML = BillsUI({ data: bills });
+      document.body.innerHTML = BillsUI({ data: billsFixtures });
 
       const newBillButton = screen.getByTestId("btn-new-bill");
       const handleClickNewBill = jest.fn((e) =>
@@ -81,6 +81,43 @@ describe("Given I am connected as an employee", () => {
       expect(screen.queryByText("Envoyer une note de frais")).toBeTruthy();
     });
   });
+
+  //todo test click on eye to open modal
+  // describe("When I am on Bills Page, there are bills, and I click on an eye icon", () => {
+  //   test("Then it should open a modal", () => {
+  //     const onNavigate = (pathname) => {
+  //       document.body.innerHTML = ROUTES({ pathname });
+  //     };
+  //     Object.defineProperty(window, "localStorage", {
+  //       value: localStorageMock,
+  //     });
+  //     window.localStorage.setItem(
+  //       "user",
+  //       JSON.stringify({
+  //         type: "Employee",
+  //       })
+  //     );
+  //     const store = null;
+  //     const billsPage = new Bills({
+  //       document,
+  //       onNavigate,
+  //       store,
+  //       localStorage: window.localStorage,
+  //     });
+  //     document.body.innerHTML = BillsUI({ data: billsFixtures });
+
+  //     const eyeIcon = screen.getAllByTestId("icon-eye");
+  //     const handleClickIconEye = jest.fn((e) =>
+  //       billsPage.handleClickIconEye(e)
+  //     );
+  //     eyeIcon[0].addEventListener("click", handleClickIconEye);
+  //     userEvent.click(eyeIcon[0]);
+  //     expect(handleClickIconEye).toHaveBeenCalled();
+
+  //     expect(screen.getByTestId("modaleFile")).toBeTruthy();
+  //     expect(screen.queryByText("Justificatif")).toBeTruthy();
+  //   });
+  // });
 
   // test d'intégration GET
   describe("When I navigate to bills", () => {
@@ -95,17 +132,11 @@ describe("Given I am connected as an employee", () => {
       router();
       window.onNavigate(ROUTES_PATH.Bills);
 
-      // await waitFor(() => screen.getByTestId("icon-eye"));
-      await waitFor(() => screen.getByText("Actions"));
-      // await waitFor(() => screen.getByText("Justificatif"));
-      // await waitFor(() => screen.getByText("refused"));
+      await waitFor(() => screen.getByText("Mes notes de frais"));
+      const subTitle = await screen.getByText("Actions");
+      expect(subTitle).toBeTruthy();
 
-      const name = await screen.getByText("test1");
-      expect(name).toBeTruthy();
-      // const type = await screen.getByText("Services en ligne");
-      // expect(type).toBeTruthy();
-      // const refused = await screen.getAllByText("refused");
-      // expect(refused).toBeTruthy();
+      expect(screen.getAllByTestId("icon-eye")[0]).toBeTruthy();
     });
   });
   describe("When an error occurs on API", () => {
@@ -153,6 +184,4 @@ describe("Given I am connected as an employee", () => {
       expect(message).toBeTruthy();
     });
   });
-
-  //todo test click on eye to open modal
 });
