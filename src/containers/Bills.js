@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ROUTES_PATH } from "../constants/routes.js";
 import { formatDate, formatStatus } from "../app/format.js";
 import Logout from "./Logout.js";
@@ -32,7 +33,8 @@ export default class {
       .html(
         `<div style='text-align: center;' class="bill-proof-container"><img width=${imgWidth} src=${billUrl} alt="Bill" /></div>`
       );
-    $("#modaleFile").modal("show");
+    if (typeof $("modaleFile").modal === "function")
+      $("#modaleFile").modal("show");
   };
 
   getBills = () => {

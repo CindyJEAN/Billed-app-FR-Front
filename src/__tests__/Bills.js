@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * @jest-environment jsdom
  */
@@ -83,41 +82,40 @@ describe("Given I am connected as an employee", () => {
   });
 
   //todo test click on eye to open modal
-  // describe("When I am on Bills Page, there are bills, and I click on an eye icon", () => {
-  //   test("Then it should open a modal", () => {
-  //     const onNavigate = (pathname) => {
-  //       document.body.innerHTML = ROUTES({ pathname });
-  //     };
-  //     Object.defineProperty(window, "localStorage", {
-  //       value: localStorageMock,
-  //     });
-  //     window.localStorage.setItem(
-  //       "user",
-  //       JSON.stringify({
-  //         type: "Employee",
-  //       })
-  //     );
-  //     const store = null;
-  //     const billsPage = new Bills({
-  //       document,
-  //       onNavigate,
-  //       store,
-  //       localStorage: window.localStorage,
-  //     });
-  //     document.body.innerHTML = BillsUI({ data: billsFixtures });
+  describe("When I am on Bills Page, there are bills, and I click on an eye icon", () => {
+    test("Then it should open a modal", () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+      const billsPage = new Bills({
+        document,
+        onNavigate,
+        store : null,
+        localStorage: window.localStorage,
+      });
+      document.body.innerHTML = BillsUI({ data: billsFixtures });
 
-  //     const eyeIcon = screen.getAllByTestId("icon-eye");
-  //     const handleClickIconEye = jest.fn((e) =>
-  //       billsPage.handleClickIconEye(e)
-  //     );
-  //     eyeIcon[0].addEventListener("click", handleClickIconEye);
-  //     userEvent.click(eyeIcon[0]);
-  //     expect(handleClickIconEye).toHaveBeenCalled();
+      const eyeIcon = screen.getAllByTestId("icon-eye")[0];
+      const handleClickIconEye = jest.fn(() =>
+        billsPage.handleClickIconEye(eyeIcon)
+      );
+      eyeIcon.addEventListener("click", handleClickIconEye);
+      userEvent.click(eyeIcon);
+      expect(handleClickIconEye).toHaveBeenCalled();
 
-  //     expect(screen.getByTestId("modaleFile")).toBeTruthy();
-  //     expect(screen.queryByText("Justificatif")).toBeTruthy();
-  //   });
-  // });
+      expect(screen.getByTestId("modaleFile")).toBeTruthy();
+      expect(screen.queryByText("Justificatif")).toBeTruthy();
+    });
+  });
 
   // test d'intégration GET
   describe("When I navigate to bills", () => {
