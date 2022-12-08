@@ -81,7 +81,6 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  //todo test click on eye to open modal
   describe("When I am on Bills Page, there are bills, and I click on an eye icon", () => {
     test("Then it should open a modal", () => {
       const onNavigate = (pathname) => {

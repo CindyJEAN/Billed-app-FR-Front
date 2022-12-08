@@ -2,6 +2,7 @@ import { toggleError, validateFileType } from "../app/formValidation.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 import Logout from "./Logout.js";
 
+
 export default class NewBill {
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document;
@@ -21,6 +22,8 @@ export default class NewBill {
   }
   handleChangeFile = (e) => {
     e.preventDefault();
+    const test = new File(["myFile.png"], "myFile.png", { type: "image/png" });
+    console.log(test);
     const fileElement = this.document.querySelector(
       `input[data-testid="file"]`
     );
@@ -33,6 +36,7 @@ export default class NewBill {
     formData.append("file", file);
     formData.append("email", email);
     const isFileValid = validateFileType(file.type);
+    console.log(fileElement.files[0]);
 
     if (!isFileValid) {
       toggleError(fileElement, true);
@@ -57,8 +61,9 @@ export default class NewBill {
   };
   handleSubmit = (e) => {
     e.preventDefault();
+    console.log("querySelector1", this.document.querySelector(`input[data-testid="file"]`))
     const fileType = this.document.querySelector(`input[data-testid="file"]`)
-      .files[0].type;
+      .files[0]?.type;
     const isFileValid = validateFileType(fileType);
     if (!isFileValid) {
       return;
@@ -86,6 +91,26 @@ export default class NewBill {
     this.updateBill(bill);
     this.onNavigate(ROUTES_PATH["Bills"]);
   };
+  // handleSubmit = e => {
+  //   e.preventDefault()
+  //   const email = JSON.parse(localStorage.getItem("user")).email
+  //   const bill = {
+  //     email,
+  //     type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
+  //     name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
+  //     amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
+  //     date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
+  //     vat: e.target.querySelector(`input[data-testid="vat"]`).value,
+  //     pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
+  //     commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
+  //     fileUrl: this.fileUrl,
+  //     fileName: this.fileName,
+  //     status: 'pending'
+  //   }
+  //   // console.log(bill.date.value);
+  //   this.updateBill(bill)
+  //   this.onNavigate(ROUTES_PATH['Bills'])
+  // }
 
   // not need to cover this function by tests
   updateBill = (bill) => {
