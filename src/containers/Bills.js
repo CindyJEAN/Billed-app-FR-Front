@@ -62,8 +62,6 @@ export default class {
               };
             }
           });
-          // console.log("length", bills.length);
-          // console.log("bills", bills);
           return bills;
         });
     }

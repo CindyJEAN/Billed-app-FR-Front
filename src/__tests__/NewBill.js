@@ -10,31 +10,30 @@ import router from "../app/Router.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import BillsUI from "../views/BillsUI.js";
-import userEvent from "@testing-library/user-event";
 
 jest.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee", () => {
   // beforeEach(() => {
   //   Object.defineProperty(window, "localStorage", { value: localStorageMock });
-  //   window.localStorage.setItem("user", JSON.stringify({ type: "Employee" }));
+  //   window.localStorage.setItem(
+  //     "user",
+  //     JSON.stringify({ type: "Employee", email: "a@a" })
+  //   );
   //   const html = NewBillUI();
   //   document.body.innerHTML = html;
   // });
   describe("When I am on NewBill Page and I choose a file", () => {
     test("Then the file is uploaded in the input", () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
       window.localStorage.setItem(
         "user",
-        JSON.stringify({
-          type: "Employee",
-          email: "a@a",
-        })
+        JSON.stringify({ type: "Employee", email: "a@a" })
       );
+      const html = NewBillUI();
+      document.body.innerHTML = html;
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
@@ -47,11 +46,12 @@ describe("Given I am connected as an employee", () => {
       });
 
       const handleChangeFile = jest.fn((e) => newBillPage.handleChangeFile(e));
-      const file = new File(["myFile.png"], "myFile.png", { type: "image/png" });
+      const file = new File(["myFile.png"], "myFile.png", {
+        type: "image/png",
+      });
       const inputFile = screen.getByTestId("file");
       inputFile.addEventListener("change", handleChangeFile);
       fireEvent.change(inputFile, {
-        // target: { files: { 0: file } },
         target: { files: [file] },
       });
       expect(handleChangeFile).toHaveBeenCalled();
@@ -59,53 +59,24 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  // describe("When I am on NewBill Page and I filled the form correctly", () => {
-  //   describe("When I click on send form", () => {
-  describe("When I am on NewBill Page and I click on send form", () => {
-    test("Then it should submit form", () => {
-      // test("Then it should create a new bill", () => {
-      // test("Then it should render bills page", () => {
-      const html = NewBillUI();
-      document.body.innerHTML = html;
-      Object.defineProperty(window, "localStorage", {
-        value: localStorageMock,
-      });
-      window.localStorage.setItem(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-          email: "a@a",
-        })
-      );
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      };
+  // describe("When I am on NewBill Page and I click on send form", () => {
+  //   test("Then it should submit form", () => {
+  //     const onNavigate = (pathname) => {
+  //       document.body.innerHTML = ROUTES({ pathname });
+  //     };
 
-      const newBillPage = new NewBill({
-        document,
-        onNavigate,
-        store: mockStore,
-        localStorage,
-      });
-      // const handleChangeFile = jest.fn((e) =>
-      //   newBillPage.handleChangeFile(e)
-      // );
-      // const file = new File(["myFile.png"], "myFile.png", { type: "image/png" });
-      // const inputFile = screen.getByTestId("file");
-      // console.log("inputFile 1", inputFile.files)
-      // inputFile.addEventListener("change", handleChangeFile);
-      // fireEvent.change(inputFile, {
-      //   target: { files: {0 : file} },
-      // });
-      // console.log("inputFile 2", inputFile.files[0])
-
-      const handleSubmit = jest.fn((e) => newBillPage.handleSubmit(e));
-      const form = screen.getByTestId("form-new-bill");
-      form.addEventListener("submit", handleSubmit);
-      fireEvent.submit(form);
-      expect(handleSubmit).toHaveBeenCalled();
-    });
-  });
+  //     const newBillPage = new NewBill({
+  //       document,
+  //       onNavigate,
+  //       store: mockStore,
+  //       localStorage,
+  //     });
+  //     const handleSubmit = jest.fn((e) => newBillPage.handleSubmit(e));
+  //     const form = screen.getByTestId("form-new-bill");
+  //     form.addEventListener("submit", handleSubmit);
+  //     fireEvent.submit(form);
+  //     expect(handleSubmit).toHaveBeenCalled();
+  //   });
   // });
 });
 // test d'intégration POST
@@ -150,8 +121,8 @@ describe("Given I am connected as an employee, I'm on newBill page", () => {
       fireEvent.change(inputDate, { target: { value: newBillData.date } });
       fireEvent.change(inputAmount, { target: { value: newBillData.amount } });
       fireEvent.change(inputPct, { target: { value: newBillData.pct } });
-      fireEvent.change(inputFile, { target: { files: [newBillData.file] }});
-      
+      fireEvent.change(inputFile, { target: { files: [newBillData.file] } });
+
       fireEvent.submit(form);
       // expect(handleSubmit).toHaveBeenCalled();
       expect(screen.getByText("Mes notes de frais")).toBeTruthy();
@@ -203,15 +174,3 @@ describe("Given I am connected as an employee, I'm on newBill page", () => {
     });
   });
 });
-
-// async function readFileAsDataURL(file) {
-//   return new Promise((resolve) => {
-//     const reader = new FileReader();
-//     reader.addEventListener('load', (evt) => {
-//       if (reader.result) {
-//         resolve(reader.result);
-//       }
-//     });
-//     reader.readAsDataURL(file);
-//   });
-// }
