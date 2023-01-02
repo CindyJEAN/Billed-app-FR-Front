@@ -2,27 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { screen, fireEvent, waitFor } from "@testing-library/dom";
+import { screen, fireEvent } from "@testing-library/dom";
 import NewBillUI from "../views/NewBillUI.js";
 import NewBill from "../containers/NewBill.js";
 import mockStore from "../__mocks__/store";
 import router from "../app/Router.js";
-import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import BillsUI from "../views/BillsUI.js";
 
 jest.mock("../app/store", () => mockStore);
 
 describe("Given I am connected as an employee", () => {
-  // beforeEach(() => {
-  //   Object.defineProperty(window, "localStorage", { value: localStorageMock });
-  //   window.localStorage.setItem(
-  //     "user",
-  //     JSON.stringify({ type: "Employee", email: "a@a" })
-  //   );
-  //   const html = NewBillUI();
-  //   document.body.innerHTML = html;
-  // });
   describe("When I am on NewBill Page and I choose a file", () => {
     test("Then the file is uploaded in the input", () => {
       Object.defineProperty(window, "localStorage", {
@@ -58,31 +49,12 @@ describe("Given I am connected as an employee", () => {
       expect(inputFile.files[0].name).toBe("myFile.png");
     });
   });
-
-  // describe("When I am on NewBill Page and I click on send form", () => {
-  //   test("Then it should submit form", () => {
-  //     const onNavigate = (pathname) => {
-  //       document.body.innerHTML = ROUTES({ pathname });
-  //     };
-
-  //     const newBillPage = new NewBill({
-  //       document,
-  //       onNavigate,
-  //       store: mockStore,
-  //       localStorage,
-  //     });
-  //     const handleSubmit = jest.fn((e) => newBillPage.handleSubmit(e));
-  //     const form = screen.getByTestId("form-new-bill");
-  //     form.addEventListener("submit", handleSubmit);
-  //     fireEvent.submit(form);
-  //     expect(handleSubmit).toHaveBeenCalled();
-  //   });
-  // });
 });
+
 // test d'intégration POST
-describe("Given I am connected as an employee, I'm on newBill page", () => {
+describe("Given I am connected as an employee and I'm on newBill page", () => {
   describe("When I submit a new bill", () => {
-    test("Then it should create bill from mock API POST and redirect to Bills page", async () => {
+    test("Then it should create a bill and redirect to Bills page", async () => {
       Object.defineProperty(window, "localStorage", {
         value: localStorageMock,
       });
@@ -97,16 +69,15 @@ describe("Given I am connected as an employee, I'm on newBill page", () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname });
       };
-      const newBillPage = new NewBill({
+
+      new NewBill({
         document,
         onNavigate,
         store: mockStore,
         localStorage,
       });
 
-      // const handleSubmit = jest.fn((e) => newBillPage.handleSubmit(e));
       const form = screen.getByTestId("form-new-bill");
-      // form.addEventListener("submit", handleSubmit);
 
       const newBillData = {
         date: "2022-10-02",
@@ -124,10 +95,10 @@ describe("Given I am connected as an employee, I'm on newBill page", () => {
       fireEvent.change(inputFile, { target: { files: [newBillData.file] } });
 
       fireEvent.submit(form);
-      // expect(handleSubmit).toHaveBeenCalled();
       expect(screen.getByText("Mes notes de frais")).toBeTruthy();
     });
   });
+
   describe("When an error occurs on API", () => {
     beforeEach(() => {
       jest.spyOn(mockStore, "bills");
